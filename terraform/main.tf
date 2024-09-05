@@ -27,7 +27,7 @@ resource "google_cloud_run_service" "firestore_trigger" {
   template {
     spec {
       containers {
-        image = "gcr.io/${var.project_id}/firestone-trigger:${var.image_tag}"
+        image = "gcr.io/${var.project_id}/firestore-trigger:${var.image_tag}"
         ports {
           container_port = 8080
         }
