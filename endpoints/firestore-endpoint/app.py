@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/firestore-event', methods=['POST'])
+@app.route('/', methods=['POST'])
 def handle_firestore_event():
     try:
         event_data = request.json

@@ -2,7 +2,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/scheduler-trigger', methods=['POST'])
+@app.route('/', methods=['POST'])
 def scheduler_trigger():
     # Print out the details of the Cloud Scheduler job
     scheduler_details = request.get_json()
