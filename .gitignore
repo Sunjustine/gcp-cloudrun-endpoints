@@ -18,4 +18,3 @@ terraform/plan.tfplan
 # Disable node_modules 
 endpoints/firestore-endpoint/trigger-functions/node_modules
 endpoints/firestore-endpoint/trigger-functions/package-lock.json
-endpoints/firestore-endpoint/trigger-functions/package.json

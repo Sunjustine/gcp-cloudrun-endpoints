@@ -1,0 +1,65 @@
+name: Add GCP Project as GitHub Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment_name:
+        description: 'Name of the new GitHub environment'
+        required: true
+      gcp_project_id:
+        description: 'Google Cloud Project ID'
+        required: true
+      gcp_service_account_key:
+        description: 'Base64 encoded Google Cloud Service Account JSON Key'
+        required: true
+
+jobs:
+  create-environment:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up GitHub CLI
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    - run: npm install -g @actions/github-script
+
+    - name: Create GitHub Environment
+      id: create-env
+      run: |
+        gh api repos/${{ github.repository }}/environments/${{ github.event.inputs.environment_name }} \
+          --method PUT \
+          --silent
+      
+    - name: Verify Environment Creation
+      run: |
+        echo "Created environment: ${{ github.event.inputs.environment_name }}"
+
+    - name: Decode Service Account Key
+      id: decode-key
+      run: |
+        echo "${{ github.event.inputs.gcp_service_account_key }}" | base64 -d > gcp-key.json
+
+    - name: Set GitHub Secrets for GCP Authentication
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const response = await github.actions.createOrUpdateRepoSecret({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            secret_name: 'GCP_PROJECT_ID',
+            encrypted_value: '${{ github.event.inputs.gcp_project_id }}',
+          });
+          const response2 = await github.actions.createOrUpdateRepoSecret({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            secret_name: 'GCP_SERVICE_ACCOUNT_KEY',
+            encrypted_value: require('fs').readFileSync('gcp-key.json', 'utf8'),
+          });
+
+    - name: Clean up Service Account Key
+      run: |
+        rm gcp-key.json
