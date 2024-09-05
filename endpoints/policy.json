@@ -1,0 +1,47 @@
+{
+    "bindings": [
+      {
+        "role": "roles/run.admin",
+        "members": [
+          "serviceAccount:gcp-devops-endpoints-deployer@<project-id>.iam.gserviceaccount.com"
+        ]
+      },
+      {
+        "role": "roles/storage.admin",
+        "members": [
+          "serviceAccount:gcp-devops-endpoints-deployer@<project-id>.iam.gserviceaccount.com"
+        ]
+      },
+      {
+        "role": "roles/artifactregistry.writer",
+        "members": [
+          "serviceAccount:gcp-devops-endpoints-deployer@<project-id>.iam.gserviceaccount.com"
+        ]
+      },
+      {
+        "role": "roles/cloudscheduler.admin",
+        "members": [
+          "serviceAccount:gcp-devops-endpoints-deployer@<project-id>.iam.gserviceaccount.com"
+        ]
+      },
+      {
+        "role": "roles/datastore.owner",
+        "members": [
+          "serviceAccount:gcp-devops-endpoints-deployer@<project-id>.iam.gserviceaccount.com"
+        ]
+      },
+      {
+        "role": "roles/iam.serviceAccountUser",
+        "members": [
+          "serviceAccount:gcp-devops-endpoints-deployer@<project-id>.iam.gserviceaccount.com"
+        ]
+      },
+      {
+        "role": "roles/cloudbuild.builds.editor",
+        "members": [
+          "serviceAccount:gcp-devops-endpoints-deployer@<project-id>.iam.gserviceaccount.com"
+        ]
+      }
+    ]
+}
+ 

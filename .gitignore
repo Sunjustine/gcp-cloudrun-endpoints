@@ -1,0 +1,19 @@
+# Disable module terraform directory
+terraform/.terraform
+
+
+# Disable file with terraform hashes
+terraform/.terraform.lock.hcl
+
+# Disable json key
+terraform/gcp-cloudrun-endpoints-project-*.json
+
+# Disable state files of terraform
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+
+# Disable terraform plan file
+terraform/plan.tfplan
+
+# Disable node_modules 
+endpoints/firestore-endpoint/trigger-functions/node_modules
