@@ -65,14 +65,14 @@ jobs:
       # Step 11: Terraform Plan
       - name: Terraform Plan
         working-directory: terraform/
-        run: terraform plan -out ./plan.tfplan
+        run: terraform plan -input=false
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
 
       # Step 12: Terraform Apply
       - name: Terraform Apply
         working-directory: terraform/
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -input=false
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
 
