@@ -36,7 +36,12 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/https-endpoint:${{ github.sha }}
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/scheduler-endpoint:${{ github.sha }}
 
-      
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: 'latest'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
 
       # Step 8: Set up Terraform
       - name: Set up Terraform
