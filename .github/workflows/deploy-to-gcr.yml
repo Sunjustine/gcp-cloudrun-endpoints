@@ -45,10 +45,12 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
     
-      - name: Install dependencies
-        working-directory: endpoints/firestore-endpoint/trigger-functions
+      # Step 6: Install dependencies for Firebase functions
+      - name: Install Firebase function dependencies
+        working-directory: endpoints/firestore-endpoint/trigger-functions/functions
         run: npm install
     
+      # Step 7: Deploy Firebase Functions
       - name: Deploy Firebase Functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
