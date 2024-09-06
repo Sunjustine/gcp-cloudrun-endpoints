@@ -1,48 +1,64 @@
-Test Assignment: Junior DevOps Engineer
-Objective: This test assignment is designed to evaluate your practical skills in cloud deployment, automation, and managing environments. You will create and deploy endpoints using Google Cloud Run, and set up GitHub Actions to streamline deployment processes.
+# gcp-cloudrun-endpoints
+This test assignment is designed to evaluate my practical skills in cloud deployment, automation, and managing environments. I've created and deployed the endpoints using Google Cloud Run, and set up GitHub Actions to streamline deployment processes.
 
-Task Overview:
+## General steps:
+1. [Workflow: Deploy to Google Container Registry and Firestore Functions](#step1)
+2. [Workflow 2: Add GCP Project as GitHub Environment](#step2)
 
-1. Create and Deploy Endpoints to Google Cloud Run. Deploy must be via terraform
 
-a) HTTPS Trigger:
+### <a name='step1'></a>Workflow: Deploy to Google Container Registry and Firestore Functions
+This workflow automates the process of building Docker images, pushing them to Google Container Registry (GCR), deploying Firestore Functions to Firebase, and deploying infrastructure using Terraform. It triggers on every push to the main branch.
 
-Write an endpoint that is triggered via HTTPS.
-When triggered, print the details of the HTTPS request.
-b) Firestore Trigger:
+**Prerequisites**
+Navigate to **Settings > Secrets and variables > Actions** and add the following secrets:
+- **Google Cloud Service Account Key:** Ensure that you have a service account key JSON file with the necessary permissions `roles/storage.admin` and `roles/cloudfunctions.admin`. This key should be added as a GitHub secret under the name **GCP_SA_KEY**.
+- **Firebase CI Token:** Generate a Firebase token using firebase login:ci and store it as a GitHub secret under the name **FIREBASE_TOKEN**.
+- **GCP Project ID:** Add your Google Cloud project ID as a GitHub secret under the name **GCP_PROJECT_ID**.
+- **Firebase Project:** Set up Firebase in your Google Cloud project and ensure the Firestore database is enabled.
 
-Write an endpoint that is triggered by changes in a Firestore collection.
-When triggered, print the details of the Firestore event.
-c) Scheduler Trigger:
+**Secrets**
 
-Write an endpoint that is triggered by Google Cloud Scheduler.
-When triggered, print the details of the scheduled job.
-Requirements:
+- Navigate to **Settings > Secrets and variables > Actions**.
+Add the following secrets:
+- GCP_SA_KEY: Your base64-encoded Google Cloud service account key.
+- FIREBASE_TOKEN: The Firebase CI token for deploying functions.
+- **GCP_PROJECT_ID**: The ID of your Google Cloud project.
 
-Deploy these endpoints to Google Cloud Run.
-Ensure that each endpoint correctly handles its respective trigger and logs the trigger details.
-2. Create a GitHub Action for Deployment to Google Container Registry (GCR):
+**How it works**
+This workflow automates several tasks:
 
-Write a GitHub Action that automates the deployment of code to Google Container Registry.
-Ensure that the action is easy to use, with clear documentation and minimal input parameters.
-The action should handle building, tagging, and pushing the Docker image to GCR.
-3. Create a GitHub Action to Add a New GCP Project as a GitHub Environment:
+1. **Code Checkout:** The workflow starts by checking out the repository code.
+2. **Set up Docker Buildx:** This step sets up Docker Buildx, a builder for multi-platform Docker builds.
+3. **Log in to Google Container Registry (GCR):** Logs into GCR using the service account key stored in the GitHub secrets.
+4. **Build and Push Docker Images:** The workflow builds Docker images for three different endpoints (Firestore, HTTPS, and Scheduler) and pushes them to GCR.
+5. **Set up Node.js and Firebase CLI:** The workflow installs Node.js and Firebase CLI, which are required for deploying Firebase Functions.
+6. **Deploy Firestore Function:** The workflow deploys the Firestore-triggered function using Firebase CLI from the specified directory.
+7. **Set up and Deploy with Terraform:** The workflow initializes Terraform, make all necessary steps and links to the deployed endpoints on Google Cloud Run stored in `terraform/outputs.tf`
 
-Write a GitHub Action that facilitates the addition of a new GCP project as a GitHub environment.
-The action should prompt for minimal input, such as the environment's name and project ID.
-Upon execution, this action should:
-Create a new GitHub environment with the specified name.
-Define and set the necessary GitHub secrets/variables for deploying to Google Cloud Run.
-Allow future deployments to the new GCP project using the action from Task 2.
-Considerations:
 
-Minimize the number of input parameters required for each GitHub Action.
-Ensure both actions are user-friendly, with clear and concise instructions.
-For the second GitHub Action, ensure that all necessary secrets/variables are set up automatically to enable seamless deployment to the new environment.
+### <a name='step2'></a>Workflow: Add GCP Project as GitHub Environment
+This workflow allows you to add a new Google Cloud Platform (GCP) project as a GitHub environment. It automates the creation of the environment in your GitHub repository and sets up the required secrets for deploying to Google Cloud.
 
-Deliverables:
+**Prerequisites**
+- **GitHub CLI:** This workflow uses the GitHub CLI to create environments in your repository.
+- **GCP Service Account Key:** You need to provide a base64-encoded service account JSON key with permissions to manage Google Cloud resources (`roles/storage.admin`, `roles/cloudfunctions.admin`). You will input this directly when triggering the workflow.
 
-Links to the deployed endpoints on Google Cloud Run.
-GitHub repository with:
-The code for the endpoints.
-The two GitHub Actions with instructions on how to use them.
+**Setup Instructions**
+*Prepare Your GCP Service Account Key*
+1. Generate a service account JSON key from your Google Cloud project with appropriate permissions.
+2. Encode the key as base64 (using base64 gcp-key.json).
+3. Keep the encoded key ready for input when triggering the workflow.
+
+*Trigger the Workflow*
+1. Go to the **Actions** tab of your GitHub repository.
+2. Select the workflow named **create-gcp-environment.yml**.
+3. Click the *Run workflow* button, which will open a form.
+
+*Provide the following inputs:*
+- environment_name: The name of the new GitHub environment.
+- gcp_project_id: Your Google Cloud Project ID.
+- gcp_service_account_key: The base64-encoded service account key.
+
+*Monitor the Workflow*
+- After triggering the workflow, you can monitor its progress in the **Actions** tab.
+- The workflow will create the new GitHub environment and set up the necessary secrets for GCP authentication.

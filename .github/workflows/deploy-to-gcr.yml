@@ -42,16 +42,18 @@ jobs:
         with:
           node-version: '18.x'
 
-      # Step 6: Install Firebase CLI
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
-
-      # Step 7: Deploy Firestore trigger function
-      - name: Deploy Firestore Function
-        working-directory: ./endpoints/firestore-endpoint/trigger-functions
+    
+      - name: Install dependencies
+        working-directory: endpoints/firestore-endpoint/trigger-functions
+        run: npm install
+    
+      - name: Deploy Firebase Functions
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}  # Ensure FIREBASE_TOKEN is set in your GitHub Secrets
-        run: firebase deploy --only functions
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          firebase deploy --only functions --project ${{ secrets.FIREBASE_PROJECT_ID }}
 
       # Step 8: Set up Terraform
       - name: Set up Terraform
